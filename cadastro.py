@@ -10,7 +10,7 @@ class QtdNaoIntException(Exception):
     ...
     
 class Produto:
-    def __init__(self, nome, categoria, preco_compra, preco_venda, qtd_inicial : int):
+    def __init__(self, nome, categoria, preco_compra, preco_venda, qtd_inicial):
         self.__id = str(uuid.uuid4())
         self.__nome = nome
         self.__categoria = categoria
@@ -81,6 +81,17 @@ class Produto:
 
     def __repr__(self):
         return f'Nome: {self.nome}\nID: {self.id}\nCategoria: {self.categoria}\nPreço Compra R${self.preco_compra}\nPreço Venda: R${self.preco_venda}\nQuantidade Inicial: {self.qtd_inicial}'
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "categoria": self.categoria,
+            "preco_compra": self.preco_compra,
+            "preco_venda": self.preco_venda,
+            "qtd_inicial": self.qtd_inicial
+        }
+
 
 class Fornecedores:
     def __init__(self, nome, cnpj, telefone, email, endereco):
@@ -133,7 +144,7 @@ class Fornecedores:
     def __repr__(self):
         return f'Nome: {self.nome}\nCNPJ: {self.cnpj}\nTelefone: {self.telefone}\nEmail: {self.email}\nEndereço: {self.endereco}\n'
 
-try:
+""" try:
     p = Produto('Carne', 'Comida', 50 ,50, 15.2)
 except PrecoCompraNaoFloatExcpetion as e:
     print(e)
@@ -142,4 +153,6 @@ except PrecoVendaNaoFloatExcpetion as e:
 except QtdNaoIntException as e:
     print(e)
 
-f = Fornecedores('Vitarella', '12323283', '83 984330946', 'emailmuitolegal@gmail.com', 'Rua Comerciante Incrível, 29\n')
+f = Fornecedores('Vitarella', '12323283', '83 984330946', 'emailmuitolegal@gmail.com', 'Rua Comerciante Incrível, 29\n') 
+"""
+
