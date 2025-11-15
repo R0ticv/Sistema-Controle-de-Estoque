@@ -8,15 +8,18 @@ class PrecoVendaNaoFloatExcpetion(Exception):
 
 class QtdNaoIntException(Exception):
     ...
-    
+
+#Considerar que pode haver nomes vazios.
+
 class Produto:
-    def __init__(self, nome, categoria, preco_compra, preco_venda, qtd_inicial):
+    def __init__(self, nome, categoria, preco_compra, preco_venda, qtd_inicial, fornecedor):
         self.__id = str(uuid.uuid4())
         self.__nome = nome
         self.__categoria = categoria
         self.preco_compra = preco_compra
         self.preco_venda = preco_venda
         self.qtd_inicial = qtd_inicial
+        self.__fornecedor = fornecedor
 
     #Nome
     @property
@@ -71,27 +74,31 @@ class Produto:
 
     @property
     def qtd_inicial(self):
-        return self.__qtd_inical
+        return self.__qtd_inicial
     
     @qtd_inicial.setter
     def qtd_inicial(self, qi):
         if not isinstance(qi, int):
             raise QtdNaoIntException('Valor Quantidade Inválido')
-        self.__qtd_inical = qi
+        self.__qtd_inicial = qi
 
+    @property
+    def fornecedor(self):
+        return self.__fornecedor
+    
     def __repr__(self):
         return f'Nome: {self.nome}\nID: {self.id}\nCategoria: {self.categoria}\nPreço Compra R${self.preco_compra}\nPreço Venda: R${self.preco_venda}\nQuantidade Inicial: {self.qtd_inicial}'
     
-    def to_dict(self):
+    def para_dict(self):
         return {
-            "id": self.id,
-            "nome": self.nome,
-            "categoria": self.categoria,
+            "id": (self.id),
+            "nome": ((self.nome).strip()).capitalize(),
+            "categoria": ((self.categoria).strip()).capitalize(),
             "preco_compra": self.preco_compra,
             "preco_venda": self.preco_venda,
-            "qtd_inicial": self.qtd_inicial
+            "qtd_inicial": self.qtd_inicial,
+            "fornecedor": self.fornecedor
         }
-
 
 class Fornecedores:
     def __init__(self, nome, cnpj, telefone, email, endereco):
@@ -143,16 +150,3 @@ class Fornecedores:
 
     def __repr__(self):
         return f'Nome: {self.nome}\nCNPJ: {self.cnpj}\nTelefone: {self.telefone}\nEmail: {self.email}\nEndereço: {self.endereco}\n'
-
-""" try:
-    p = Produto('Carne', 'Comida', 50 ,50, 15.2)
-except PrecoCompraNaoFloatExcpetion as e:
-    print(e)
-except PrecoVendaNaoFloatExcpetion as e:
-    print(e)
-except QtdNaoIntException as e:
-    print(e)
-
-f = Fornecedores('Vitarella', '12323283', '83 984330946', 'emailmuitolegal@gmail.com', 'Rua Comerciante Incrível, 29\n') 
-"""
-
