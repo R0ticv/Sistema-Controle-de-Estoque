@@ -1,0 +1,3 @@
+class Relatorios:
+    ...
+#Transformar em HTML e dps converter em PDF

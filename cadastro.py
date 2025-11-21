@@ -1,4 +1,5 @@
 import uuid
+import re
 
 class PrecoCompraNaoFloatExcpetion(Exception):
     ...
@@ -9,7 +10,8 @@ class PrecoVendaNaoFloatExcpetion(Exception):
 class QtdNaoIntException(Exception):
     ...
 
-#Considerar que pode haver nomes vazios.
+class CnpjFormatoInvalidoException(Exception):
+    ...
 
 class Produto:
     def __init__(self, nome, categoria, preco_compra, preco_venda, qtd_inicial, fornecedor):
@@ -91,7 +93,7 @@ class Produto:
     
     def para_dict(self):
         return {
-            "id": (self.id),
+            "id": self.id,
             "nome": ((self.nome).strip()).capitalize(),
             "categoria": ((self.categoria).strip()).capitalize(),
             "preco_compra": self.preco_compra,
@@ -103,7 +105,7 @@ class Produto:
 class Fornecedores:
     def __init__(self, nome, cnpj, telefone, email, endereco):
         self.__nome = nome
-        self.__cnpj = cnpj
+        self.cnpj = cnpj
         self.__telefone = telefone
         self.__email = email
         self.__endereco = endereco
@@ -122,7 +124,11 @@ class Fornecedores:
     
     @cnpj.setter
     def cnpj(self, c):
-        self.__cnpj = c
+        match = re.search(r"[0-9]{2}.[0-9]{3}.[0-9]{3}/[0]{3}[1]{1}-[0-9]{2}", c)
+        if not match:
+            raise CnpjFormatoInvalidoException('CNPJ Formato Inválido')
+        else:
+            self.__cnpj = c
     
     @property
     def telefone(self):
@@ -130,6 +136,7 @@ class Fornecedores:
     
     @telefone.setter
     def telefone(self, t):
+        #Match, telefone
         self.__telefone = t
 
     @property
@@ -147,6 +154,16 @@ class Fornecedores:
     @endereco.setter
     def endereco(self, e):
         self.__endereco = e
-
+    
     def __repr__(self):
         return f'Nome: {self.nome}\nCNPJ: {self.cnpj}\nTelefone: {self.telefone}\nEmail: {self.email}\nEndereço: {self.endereco}\n'
+    
+    def para_dict(self):
+        return {
+            "nome": ((self.nome).strip()).capitalize(),
+            "cnpj": self.cnpj,
+            "telefone": self.telefone,
+            "email": self.email,
+            "endereço": self.endereco,
+        }
+    
