@@ -1,10 +1,18 @@
 from persistencia import *
 from cadastro import *
 
-p = Produto('Outro Nome','Categoria', 16.8, 22.8, 10, 'Fornecedor')
+nome = input('Nome: ')
+categoria = input('Categoria: ')
+qtd = int(input('Quantidade: '))
+preco_venda = float(input('Preco venda: '))
+preco_compra = float(input('Preco compra: '))
+fornecedor = input('Fornecedor: ')
+estoque_minimo = int(input('Etoque mínimo: '))
+
+p = Produto(nome, categoria,preco_venda, preco_compra, qtd, fornecedor, estoque_minimo)
 persistencia = PersistenciaProduto()
-#persistencia.adicionar(p)
-persistencia.remover('')
-""" fornecedor = Fornecedores('Nome','02.234.567/0001-89','telefone','email','endereço')
-f = PersistenciaFornecedores()
-f.adicionar(fornecedor) """
+persistencia.adicionar(p)
+
+#fornecedor = Fornecedores('Nome','02.234.67/0001-89','telefone','email','endereço')
+#f = PersistenciaFornecedores()
+#f.adicionar(fornecedor)

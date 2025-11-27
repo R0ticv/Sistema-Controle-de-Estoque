@@ -1,6 +1,8 @@
 from cadastro import *
 import json
 import os
+#from registro_entrada import *
+
 class ProdutoRepetidoException(Exception):
     ...
 
@@ -50,8 +52,18 @@ class PersistenciaProduto:
             
         dados.append(produto.para_dict())
         self.salvar(dados)
+        mov = PersistenciaMovimentacao()
+        mov.registrar(produto.id, "entrada", produto.qtd)
 
-    def atualizar(self, id : Produto):
+
+    def buscar_por_id(self, id_produto: str):
+        dados = self.ler()
+        for item in dados:
+            if item['id'] == id_produto:
+                return item
+        return None
+
+    def atualizar(self):
         dados = self.ler()
 
     def remover(self, id_produto: str):
@@ -65,6 +77,7 @@ class PersistenciaProduto:
         if not encontrar:
             raise ValueError(f"Produto com ID '{id_produto}' não encontrado.")
 
+        #Executrar o registro de saída
         self.salvar(dados)
 
 class PersistenciaFornecedores:
@@ -91,6 +104,13 @@ class PersistenciaFornecedores:
         with open(self.__arquivo, 'w',encoding='utf-8') as arquivo_json:
             json.dump(dados, arquivo_json, ensure_ascii=False, indent=4,)
 
+    def buscar_por_id(self, id_produto: str):
+        dados = self.ler()
+        for item in dados:
+            if item['id'] == id_produto:
+                return item
+        return None
+
     def adicionar(self, fornecedor : Fornecedores):
         dados = self.ler()
 
@@ -112,11 +132,51 @@ class PersistenciaFornecedores:
 
         #Os itens serão mostrados na tabela/Interface
     def editar(self, cnpj : Fornecedores):
-        dados = self.ler()
+        dados = self.ler()  
     
     def remover(self, cnpj : Fornecedores):
         dados = self.ler()
         for item in dados:
             if (item['cnpj'] == cnpj.cnpj):
                 dados.remove(item)
+                
                 self.salvar(dados)
+
+class PersistenciaMovimentacao:
+    def __init__(self, arquivo = 'movimentacao.json' ):
+        self.__arquivo = arquivo
+        if not os.path.exists(self.__arquivo):
+            with open(self.__arquivo, 'w', encoding='utf-8') as arquivo:
+                json.dump([], arquivo, ensure_ascii=False, indent=4)
+        
+        try:
+            with open(self.__arquivo, 'r', encoding='utf-8') as f_json:
+                self.dados = json.load(f_json)
+
+        except (json.JSONDecodeError, FileNotFoundError):
+            self.dados = []
+            with open(self.__arquivo, 'w', encoding='utf-8') as f_json:
+                json.dump([], f_json, ensure_ascii=False,indent=4)
+
+    def ler(self):
+        with open(self.__arquivo,'r', encoding='utf-8') as arquivo_json:
+            return json.load(arquivo_json)
+        
+    def salvar(self, dados):
+        with open(self.__arquivo, 'w',encoding='utf-8') as arquivo_json:
+            json.dump(dados, arquivo_json, ensure_ascii=False, indent=4,)
+    
+    def registrar(self, id_produto, tipo, quantidade):
+        dados = self.ler()
+
+        from datetime import datetime
+
+        movimento = {
+            "id_produto": id_produto,
+            "tipo": tipo,
+            "quantidade": quantidade,
+            "data": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+        dados.append(movimento)
+        self.salvar(dados)

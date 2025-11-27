@@ -14,14 +14,15 @@ class CnpjFormatoInvalidoException(Exception):
     ...
 
 class Produto:
-    def __init__(self, nome, categoria, preco_compra, preco_venda, qtd_inicial, fornecedor):
+    def __init__(self, nome, categoria, preco_compra, preco_venda, qtd, fornecedor, estoque_minimo):
         self.__id = str(uuid.uuid4())
         self.__nome = nome
         self.__categoria = categoria
         self.preco_compra = preco_compra
         self.preco_venda = preco_venda
-        self.qtd_inicial = qtd_inicial
+        self.qtd = qtd
         self.__fornecedor = fornecedor
+        self.estoque_minimo = estoque_minimo
 
     #Nome
     @property
@@ -72,24 +73,23 @@ class Produto:
             raise PrecoVendaNaoFloatExcpetion('Valor Preço Venda Inválido')
         self.__preco_venda = pv
     
-    # Quantidade Inicial
 
     @property
-    def qtd_inicial(self):
-        return self.__qtd_inicial
+    def qtd(self):
+        return self.__qtd
     
-    @qtd_inicial.setter
-    def qtd_inicial(self, qi):
+    @qtd.setter
+    def qtd(self, qi):
         if not isinstance(qi, int):
             raise QtdNaoIntException('Valor Quantidade Inválido')
-        self.__qtd_inicial = qi
+        self.__qtd = qi
 
     @property
     def fornecedor(self):
         return self.__fornecedor
     
     def __repr__(self):
-        return f'Nome: {self.nome}\nID: {self.id}\nCategoria: {self.categoria}\nPreço Compra R${self.preco_compra}\nPreço Venda: R${self.preco_venda}\nQuantidade Inicial: {self.qtd_inicial}'
+        return f'Nome: {self.nome}\nID: {self.id}\nCategoria: {self.categoria}\nPreço Compra R${self.preco_compra}\nPreço Venda: R${self.preco_venda}\nQuantidade Inicial: {self.qtdl}'
     
     def para_dict(self):
         return {
@@ -98,7 +98,8 @@ class Produto:
             "categoria": ((self.categoria).strip()).capitalize(),
             "preco_compra": self.preco_compra,
             "preco_venda": self.preco_venda,
-            "qtd_inicial": self.qtd_inicial,
+            "qtd": self.qtd,
+            "estoque_minimo": self.estoque_minimo,
             "fornecedor": self.fornecedor
         }
 
