@@ -4,7 +4,7 @@ from persistencia import *
 from cadastro import *
 
 
-class janela_estoque(Tk):
+class JanelaEstoque(Tk):
     def __init__(self):
         super().__init__()
         self.configurar_janela()
@@ -52,7 +52,8 @@ class janela_estoque(Tk):
             self.quadro1,
             text='Início',
             **estilo_template,
-            image=self.icon_inicio
+            image=self.icon_inicio,
+            command=self.voltar_janela_inicio
         )
         self.button_inicio.pack(padx=30, pady=5,anchor='w')
         
@@ -60,7 +61,8 @@ class janela_estoque(Tk):
             self.quadro1,
             text='Produtos',
             **estilo_template,
-            image=self.icon_produtos
+            image=self.icon_produtos,
+            command=self.janela_produto
         )
         
         self.button_produto.pack(padx=30, pady=5,anchor='w')
@@ -70,7 +72,8 @@ class janela_estoque(Tk):
             self.quadro1,
             text='Fornecedores',
             **estilo_template,
-            image=self.icon_fornecedores
+            image=self.icon_fornecedores,
+            command=self.janela_fornecedores
         )
         self.button_fornecedores.pack(pady=5, padx=30,anchor='w')
         
@@ -88,7 +91,8 @@ class janela_estoque(Tk):
             self.quadro1,
             text='Movimentação',
             **estilo_template,
-            image=self.icon_movimentacao
+            image=self.icon_movimentacao,
+            command=self.janela_movimentacao
         )
         self.button_movimentacao.pack(padx=30, pady=5,anchor='w')
         
@@ -97,7 +101,8 @@ class janela_estoque(Tk):
             self.quadro1,
             text='Relatórios',
             **estilo_template,
-            image=self.icon_relatorio
+            image=self.icon_relatorio,
+            command=self.janela_relatorio
         )
         self.button_relatorio.pack(padx=30, pady=5,anchor='w')
 
@@ -261,12 +266,11 @@ class janela_estoque(Tk):
             command=self.salvar_update).pack(pady=15)
         
     def salvar_update(self):
-        id_prod = self.row_clicada  # iid da linha = id do JSON
+        id_prod = self.row_clicada 
         nome = self.ed_nome.get().strip()
         qtd = self.ed_cat.get().strip()
         preco_venda = self.ed_qtd.get().strip()
 
-        # Validação básica
         if not nome or not qtd.isdigit():
             messagebox.showerror("Erro", "Nome ou quantidade inválidos!")
             return
@@ -288,7 +292,6 @@ class janela_estoque(Tk):
                 produtos[i]["qtd"] = int(qtd)
                 produtos[i]["preco_venda"] = preco_venda
 
-                # ✅ recalculando status automaticamente
                 minimo = produtos[i]["estoque_minimo"]
                 status = "Disponível" if produtos[i]["qtd"] > minimo else "Baixo estoque"
                 produtos[i]["status"] = status
@@ -321,6 +324,28 @@ class janela_estoque(Tk):
             persist.atualizar_todos = True
 
         persist.salvar(produtos) 
-
-janela = janela_estoque()
-janela.mainloop()
+        
+    def voltar_janela_inicio(self):
+        from janela_inico import JanelaInicio
+        self.destroy()
+        j = JanelaInicio()
+        
+    def janela_fornecedores(self):
+        from janela_fornecedores import JanelaFornecedores
+        self.destroy()
+        j = JanelaFornecedores()
+        
+    def janela_produto(self):
+        from janela_produto import JanelaProduto
+        self.destroy()
+        j = JanelaProduto()
+    
+    def janela_movimentacao(self):
+        from janela_movimentacao import JanelaMovimentacao
+        self.destroy()
+        j = JanelaMovimentacao()
+    
+    def janela_relatorio(self):
+        from janela_relatorios import JanelaRelatorios
+        self.destroy()
+        j = JanelaRelatorios()

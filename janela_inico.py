@@ -1,14 +1,16 @@
-from tkinter import Tk, Button, PhotoImage, Frame
-from persistencia import *
-from cadastro import *
+from tkinter import * 
+from tkinter import ttk, Button, Label, Entry
 
-class JanelaRelatorios(Tk):
+class JanelaInicio(Tk):
     def __init__(self):
         super().__init__()
         self.configurar_janela()
         self.configurar_background()
         self.configurar_barra_lateral()
         self.configurar_botoes_laterais()
+        self.configurar_botao_criar()
+        self.configurar_botao_fornecedor()
+        self.configurar_botao_bemvindo()
     
     def configurar_janela(self):
         self.title('Sistema Controle de Estoque')
@@ -46,8 +48,7 @@ class JanelaRelatorios(Tk):
             self.quadro1,
             text='Início',
             **estilo_template,
-            image=self.icon_inicio,
-            command=self.voltar_janela_inicio
+            image=self.icon_inicio
         )
         self.button_inicio.pack(padx=50, pady=5,anchor='w')
         
@@ -77,7 +78,7 @@ class JanelaRelatorios(Tk):
             text='Estoque',
             **estilo_template,
             image=self.icon_estoque,
-            command=self.janela_estoque
+            command=self.janela_estoque            
         )
         self.button_estoque.pack(padx=50, pady=5,anchor='w')
         
@@ -96,15 +97,51 @@ class JanelaRelatorios(Tk):
             self.quadro1,
             text='Relatórios',
             **estilo_template,
-            image=self.icon_relatorio
+            image=self.icon_relatorio,
+            command=self.janela_relatorios
         )
         self.button_relatorio.pack(padx=50, pady=5,anchor='w')
-    
-    def voltar_janela_inicio(self):
-        from janela_inico import JanelaInicio
-        self.destroy()
-        j = JanelaInicio()
-    
+        
+    def configurar_botao_criar(self):
+        bt_criar = Button(self, text='Clique aqui',font=('Arial Bold',55), bg='#FF991c', fg='black', command=self.janela_produto)
+        bt_criar.place(relx=0.65, rely = 0.4, width = 450, heigh= 200)
+        
+        lb_criar = Label(
+            self,
+            text='Cadastre\nUm Produto',
+            bg='#838181',
+            fg='#FFFFFF',
+            font=('Inter', 40, 'bold'),
+            anchor='center'
+                         )
+        lb_criar.place(relx=0.65,rely=0.25,width = 450, heigh= 150)
+
+    def configurar_botao_fornecedor(self):
+        bt_fornecedor = Button(self, text='Clique aqui',font=('Arial Bold',55), bg='#FF991c', fg='black', command=self.janela_fornecedores)
+        bt_fornecedor.place(relx=0.25, rely = 0.4, width = 450, heigh= 200)
+        
+        lb_fornecedor = Label(
+            self,
+            text='Cadastre\nUm Fornecedor',
+            bg='#838181',
+            fg='#FFFFFF',
+            font=('Inter', 40, 'bold'),
+            anchor='center'
+                         )
+        lb_fornecedor.place(relx=0.25,rely=0.25,width = 450, heigh= 150)
+        
+    def configurar_botao_bemvindo(self):
+        
+        lb_titulo = Label(
+            self,
+            text='Bem Vindo',
+            bg='#838181',
+            fg='#FFFFFF',
+            font=('Inter', 50, 'bold'),
+            anchor='center'
+                         )
+        lb_titulo.place(relx=0.45,rely=0.05,width = 450, heigh= 150)
+        
     def janela_estoque(self):
         from janela_estoque import JanelaEstoque
         self.destroy()
@@ -124,3 +161,8 @@ class JanelaRelatorios(Tk):
         from janela_produto import JanelaProduto
         self.destroy()
         j = JanelaProduto()
+            
+    def janela_relatorios(self):
+        from janela_relatorios import JanelaRelatorios
+        self.destroy()
+        j = JanelaRelatorios()

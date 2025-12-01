@@ -1,8 +1,9 @@
-from tkinter import Tk, Button, PhotoImage, Frame
-from persistencia import *
-from cadastro import *
+import tkinter as tk
+from tkinter import Tk, ttk, messagebox, Button, PhotoImage, Frame
 
-class JanelaRelatorios(Tk):
+class JanelaMovimentacao(Tk):
+    def __init__(self):
+        super().__init__()
     def __init__(self):
         super().__init__()
         self.configurar_janela()
@@ -86,8 +87,7 @@ class JanelaRelatorios(Tk):
             self.quadro1,
             text='Movimentação',
             **estilo_template,
-            image=self.icon_movimentacao,
-            command=self.janela_movimentacao
+            image=self.icon_movimentacao
         )
         self.button_movimentacao.pack(padx=50, pady=5,anchor='w')
         
@@ -96,9 +96,47 @@ class JanelaRelatorios(Tk):
             self.quadro1,
             text='Relatórios',
             **estilo_template,
-            image=self.icon_relatorio
+            image=self.icon_relatorio,
+            command=self.janela_relatorios
         )
         self.button_relatorio.pack(padx=50, pady=5,anchor='w')
+    
+    def _criar_area_principal(self):
+        self.main_frame = tk.Frame(self, bg="#1f1f1f")
+        self.main_frame.pack(side="right", fill="both", expand=True)
+
+        campos = [
+            "Tipo de movimento (Ex: entrada, saída ou transferência): ",
+            "Data e hora (Ex: data - hora): ",
+            "Número de produtos movimentados: ",
+            "Local de estoque: ",
+            "Usuário responsável: "
+        ]
+
+        for titulo in campos:
+            self._criar_secao_textbox(titulo)
+
+    def _criar_secao_textbox(self, titulo):
+        frame = tk.Frame(self.main_frame, bg="#1f1f1f")
+        frame.pack(fill="x", pady=10, padx=20)
+
+        
+        title_label = tk.Label(
+            frame,
+            text=titulo,
+            bg="#8c8c8c",
+            fg="white",
+            font=("Arial", 12, "bold"),
+            anchor="w",
+            padx=10,
+            pady=5
+        )
+        title_label.pack(fill="x", pady=5)
+
+        
+        textbox = tk.Text(frame, height=4, bg="#c9c9c9", font=("Arial", 11))
+        textbox.pack(fill="x")
+
     
     def voltar_janela_inicio(self):
         from janela_inico import JanelaInicio
@@ -109,18 +147,18 @@ class JanelaRelatorios(Tk):
         from janela_estoque import JanelaEstoque
         self.destroy()
         j = JanelaEstoque()
-
+    
     def janela_fornecedores(self):
         from janela_fornecedores import JanelaFornecedores
         self.destroy()
         j = JanelaFornecedores()
         
-    def janela_movimentacao(self):
-        from janela_movimentacao import JanelaMovimentacao
-        self.destroy()
-        j = JanelaMovimentacao()
-        
     def janela_produto(self):
         from janela_produto import JanelaProduto
         self.destroy()
         j = JanelaProduto()
+            
+    def janela_relatorios(self):
+        from janela_relatorios import JanelaRelatorios
+        self.destroy()
+        j = JanelaRelatorios()

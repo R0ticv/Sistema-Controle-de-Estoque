@@ -1,8 +1,6 @@
-from tkinter import Tk, Button, PhotoImage, Frame
-from persistencia import *
-from cadastro import *
+from tkinter import Tk, Button, Frame, PhotoImage
 
-class JanelaRelatorios(Tk):
+class JanelaProduto(Tk):
     def __init__(self):
         super().__init__()
         self.configurar_janela()
@@ -55,8 +53,7 @@ class JanelaRelatorios(Tk):
             self.quadro1,
             text='Produtos',
             **estilo_template,
-            image=self.icon_produtos,
-            command=self.janela_produto
+            image=self.icon_produtos
         )
         
         self.button_produto.pack(padx=50, pady=5,anchor='w')
@@ -96,7 +93,8 @@ class JanelaRelatorios(Tk):
             self.quadro1,
             text='Relatórios',
             **estilo_template,
-            image=self.icon_relatorio
+            image=self.icon_relatorio,
+            command=self.janela_relatorios
         )
         self.button_relatorio.pack(padx=50, pady=5,anchor='w')
     
@@ -119,8 +117,8 @@ class JanelaRelatorios(Tk):
         from janela_movimentacao import JanelaMovimentacao
         self.destroy()
         j = JanelaMovimentacao()
-        
-    def janela_produto(self):
-        from janela_produto import JanelaProduto
+
+    def janela_relatorios(self):
+        from janela_relatorios import JanelaRelatorios
         self.destroy()
-        j = JanelaProduto()
+        j = JanelaRelatorios()
