@@ -1,4 +1,7 @@
-from tkinter import Tk, PhotoImage, Frame, Button 
+import tkinter as tk
+from tkinter import Tk, Button, Frame, PhotoImage, Label, Entry, messagebox, ttk
+from cadastro import Fornecedores  
+from persistencia import PersistenciaFornecedores, CnpjRepetidoException, TelefoneRepetidoException, EmailRepetidoException
 
 class JanelaFornecedores(Tk):
     def __init__(self):
@@ -7,11 +10,16 @@ class JanelaFornecedores(Tk):
         self.configurar_background()
         self.configurar_barra_lateral()
         self.configurar_botoes_laterais()
+        self.configurar_titulo()
+        self.configurar_entry_cadastro()
+        self.configurar_botao_salvar()
+        self.configurar_tabela_fornecedores()
     
     def configurar_janela(self):
         self.title('Sistema Controle de Estoque')
         self.resizable(width=False, height=False)
         self.state('zoomed')
+        self.iconbitmap('icon.ico')
         
     def configurar_background(self):
         self.configure(bg='#161515')
@@ -97,6 +105,71 @@ class JanelaFornecedores(Tk):
             command=self.janela_relatorios
         )
         self.button_relatorio.pack(padx=50, pady=5,anchor='w')
+
+    def configurar_titulo(self):
+        lb_titulo = Label(
+            self,
+            text='Cadastro de Fornecedores',
+            bg='#838181',
+            fg='#FFFFFF',
+            font=('Inter', 50, 'bold'),
+            anchor='center'
+        )
+        lb_titulo.place(relx=0.40,rely=0.05, height=150)
+
+    def configurar_entry_cadastro(self):
+        self.campos = ['Nome', 'CNPJ', 'Telefone', 'email','endereco']
+        self.entries = {}
+
+        for i, campo in enumerate(self.campos):
+            frame = Frame(self, bg='#161515')
+            frame.place(relx=0.18, rely=0.22 + i * 0.095)
+
+            Label(frame, text=campo, font=("Inter", 16), fg="white", bg="#161515", anchor='w').pack()
+            entry = Entry(frame, font=("Inter", 14), bg="#222", fg="white", width=28, relief="solid", bd=1, insertbackground="cyan")
+            entry.pack(pady=(2, 5))
+
+            self.entries[campo] = entry
+            
+    def configurar_botao_salvar(self):
+        self.bt_salvar = Button(
+            self, text="Salvar Cadastro", font=("Inter", 18, "bold"),
+            bg="#00aaff", fg="black", cursor="hand2",
+            command=self.salvar_cadastro
+        )
+        self.bt_salvar.place(relx=0.5, rely=0.9, anchor='center', width=280, height=50)
+                   
+    def salvar_cadastro(self):
+        try:
+            nome = self.entries["Nome"].get().strip().capitalize()
+            cnpj = self.entries["CNPJ"].get().strip()
+            telefone = self.entries["Telefone"].get().strip()
+            email = self.entries["email"].get().strip().lower()
+            endereco = self.entries["endereco"].get().strip().capitalize()
+
+            fornecedor = Fornecedores(nome, cnpj, telefone, email, endereco)
+
+            persist = PersistenciaFornecedores()
+            persist.adicionar(fornecedor)
+
+            messagebox.showinfo("Sucesso", "Fornecedor salvo no JSON!")
+            print("Salvo:", fornecedor.para_dict())
+
+            for ent in self.entries.values():
+                ent.delete(0, tk.END)
+
+        except CnpjRepetidoException as e:
+            messagebox.showwarning("CNPJ repetido", str(e))
+
+        except TelefoneRepetidoException as e:
+            messagebox.showwarning("Telefone repetido", str(e))
+
+        except EmailRepetidoException as e:
+            messagebox.showwarning("Email repetido", str(e))
+
+        except ValueError:
+            messagebox.showerror("Erro", "Preencha os campos corretamente!")
+                    
     
     def voltar_janela_inicio(self):
         from janela_inico import JanelaInicio

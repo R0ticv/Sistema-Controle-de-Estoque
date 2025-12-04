@@ -1,5 +1,6 @@
 import tkinter as tk
-from tkinter import Tk, ttk, messagebox, Button, PhotoImage, Frame
+from tkinter import Tk, ttk, Label, Button, PhotoImage, Frame
+from persistencia import PersistenciaMovimentacao 
 
 class JanelaMovimentacao(Tk):
     def __init__(self):
@@ -10,11 +11,14 @@ class JanelaMovimentacao(Tk):
         self.configurar_background()
         self.configurar_barra_lateral()
         self.configurar_botoes_laterais()
+        self.configurar_tabela()
+        self.carregar_movimentacoes_na_tabela()
     
     def configurar_janela(self):
         self.title('Sistema Controle de Estoque')
         self.resizable(width=False, height=False)
         self.state('zoomed')
+        self.iconbitmap('icon.ico')
         
     def configurar_background(self):
         self.configure(bg='#161515')
@@ -101,42 +105,74 @@ class JanelaMovimentacao(Tk):
         )
         self.button_relatorio.pack(padx=50, pady=5,anchor='w')
     
-    def _criar_area_principal(self):
-        self.main_frame = tk.Frame(self, bg="#1f1f1f")
-        self.main_frame.pack(side="right", fill="both", expand=True)
+    def configurar_tabela(self):
+        Label(
+            self, text="Histórico de Movimentações", bg="#838181",
+            fg="white", font=("Inter", 35, "bold"), anchor="center"
+        ).place(relx=0.5, rely=0.08, anchor="center", height=90)
 
-        campos = [
-            "Tipo de movimento (Ex: entrada, saída ou transferência): ",
-            "Data e hora (Ex: data - hora): ",
-            "Número de produtos movimentados: ",
-            "Local de estoque: ",
-            "Usuário responsável: "
-        ]
 
-        for titulo in campos:
-            self._criar_secao_textbox(titulo)
+        self.quadro2 = Frame(self, background="#FDFDFD")
+        self.quadro2.place(relx=0.143, rely=0.16, relwidth=0.848, relheight=0.8)
 
-    def _criar_secao_textbox(self, titulo):
-        frame = tk.Frame(self.main_frame, bg="#1f1f1f")
-        frame.pack(fill="x", pady=10, padx=20)
+        self.tree = ttk.Treeview(self.quadro2, show='headings', selectmode='browse')
+        colunas = ('id_produto', 'tipo', 'quantidade', 'data')
+        self.tree['columns'] = colunas
 
-        
-        title_label = tk.Label(
-            frame,
-            text=titulo,
-            bg="#8c8c8c",
-            fg="white",
-            font=("Arial", 12, "bold"),
-            anchor="w",
-            padx=10,
-            pady=5
-        )
-        title_label.pack(fill="x", pady=5)
+        self.tree.heading('id_produto', text='ID do Produto', anchor='center')
+        self.tree.heading('tipo', text='Tipo', anchor='center')
+        self.tree.heading('quantidade', text='Quantidade', anchor='center')
+        self.tree.heading('data', text='Data', anchor='center')
 
-        
-        textbox = tk.Text(frame, height=4, bg="#c9c9c9", font=("Arial", 11))
-        textbox.pack(fill="x")
+        scroll_y = ttk.Scrollbar(self.quadro2, orient="vertical", command=self.tree.yview)
+        self.tree.configure(yscrollcommand=scroll_y.set)
 
+        self.tree.column('id_produto', width=300, anchor='center', stretch=False)
+        self.tree.column('tipo', width=200, anchor='center', stretch=False)
+        self.tree.column('quantidade', width=200, anchor='center', stretch=False)
+        self.tree.column('data', width=350, anchor='center', stretch=False)
+
+        self.tree.grid(row=0, column=0, sticky="nsew")
+        scroll_y.grid(row=0, column=1, sticky="ns")
+
+        self.quadro2.rowconfigure(0, weight=1)
+        self.quadro2.columnconfigure(0, weight=1)
+    
+    def carregar_movimentacoes_na_tabela(self):
+        persist = PersistenciaMovimentacao()
+        movimentacoes = persist.ler()
+
+        for mov in movimentacoes:
+            self.tree.insert("", "end", values=(
+                mov["id_produto"],
+                mov["tipo"],
+                mov["quantidade"],
+                mov["data"]
+            ))
+
+    def carregar_movimentacoes_na_tabela(self):
+        persist = PersistenciaMovimentacao()
+        movimentacoes = persist.ler()
+
+        for mov in movimentacoes:
+            self.tree.insert("", "end", values=(
+                mov["id_produto"],
+                mov["tipo"],
+                mov["quantidade"],
+                mov["data"]
+            ))
+
+    def carregar_movimentacoes_na_tabela(self):
+            persist = PersistenciaMovimentacao()
+            movimentacoes = persist.ler()
+
+            for mov in movimentacoes:
+                self.tree.insert("", "end", values=(
+                    mov["id_produto"],
+                    mov["tipo"],
+                    mov["quantidade"],
+                    mov["data"]
+                ))    
     
     def voltar_janela_inicio(self):
         from janela_inico import JanelaInicio

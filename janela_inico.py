@@ -16,6 +16,7 @@ class JanelaInicio(Tk):
         self.title('Sistema Controle de Estoque')
         self.resizable(width=False, height=False)
         self.state('zoomed')
+        self.iconbitmap('icon.ico')
         
     def configurar_background(self):
         self.configure(bg='#161515')

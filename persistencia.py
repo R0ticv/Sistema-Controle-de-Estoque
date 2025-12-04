@@ -1,7 +1,6 @@
 from cadastro import *
 import json
 import os
-#from registro_entrada import *
 
 class ProdutoRepetidoException(Exception):
     ...
@@ -76,8 +75,6 @@ class PersistenciaProduto:
                 break   
         if not encontrar:
             raise ValueError(f"Produto com ID '{id_produto}' não encontrado.")
-
-        #Executrar o registro de saída
         self.salvar(dados)
 
 class PersistenciaFornecedores:
@@ -130,7 +127,6 @@ class PersistenciaFornecedores:
         dados.append(fornecedor.para_dict())
         self.salvar(dados)
 
-        #Os itens serão mostrados na tabela/Interface
     def editar(self, cnpj : Fornecedores):
         dados = self.ler()  
     
